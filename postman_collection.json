@@ -1,0 +1,223 @@
+{
+  "info": {
+    "_postman_id": "school-management-api-collection",
+    "name": "School Management API",
+    "description": "Complete Postman collection for the School Management API assignment.\n\nBase URL: {{base_url}}",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "Verify the API server is running."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"message\": \"School Management API is running 🚀\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "POST /addSchool — Success",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Greenwood High\",\n  \"address\": \"123 Oak Street, New York\",\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/addSchool",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "addSchool"
+          ]
+        },
+        "description": "Add a valid school. Expects 201 Created with the inserted school object."
+      },
+      "response": [
+        {
+          "name": "201 Created",
+          "status": "Created",
+          "code": 201,
+          "body": "{\n  \"success\": true,\n  \"message\": \"School added successfully\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Greenwood High\",\n    \"address\": \"123 Oak Street, New York\",\n    \"latitude\": 40.7128,\n    \"longitude\": -74.006\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "POST /addSchool — Validation Error (empty name)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"address\": \"123 Oak Street\",\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/addSchool",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "addSchool"
+          ]
+        },
+        "description": "Send an empty name — expects 400 Bad Request with validation errors."
+      },
+      "response": [
+        {
+          "name": "400 Bad Request",
+          "status": "Bad Request",
+          "code": 400,
+          "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": [\n    { \"field\": \"name\", \"message\": \"School name is required\" }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "POST /addSchool — Validation Error (invalid coordinates)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test School\",\n  \"address\": \"123 Street\",\n  \"latitude\": 999,\n  \"longitude\": \"abc\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/addSchool",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "addSchool"
+          ]
+        },
+        "description": "Send invalid latitude/longitude — expects 400 Bad Request."
+      },
+      "response": []
+    },
+    {
+      "name": "GET /listSchools — Success",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/listSchools?latitude=40.7128&longitude=-74.0060",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "listSchools"
+          ],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "40.7128"
+            },
+            {
+              "key": "longitude",
+              "value": "-74.0060"
+            }
+          ]
+        },
+        "description": "Fetch all schools sorted by distance from New York City coordinates."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"message\": \"Schools fetched and sorted by proximity\",\n  \"count\": 2,\n  \"user_location\": { \"latitude\": 40.7128, \"longitude\": -74.006 },\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Greenwood High\",\n      \"address\": \"123 Oak Street, New York\",\n      \"latitude\": 40.7128,\n      \"longitude\": -74.006,\n      \"distance_km\": 0\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Sunrise Academy\",\n      \"address\": \"456 Maple Ave, Los Angeles\",\n      \"latitude\": 34.0522,\n      \"longitude\": -118.2437,\n      \"distance_km\": 3940.0678\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "GET /listSchools — Missing Query Params",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/listSchools",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "listSchools"
+          ]
+        },
+        "description": "Call without latitude/longitude — expects 400 Bad Request."
+      },
+      "response": []
+    },
+    {
+      "name": "GET — 404 Not Found",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/nonexistent",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "nonexistent"
+          ]
+        },
+        "description": "Any undefined route — expects 404 Not Found."
+      },
+      "response": []
+    }
+  ]
+}
