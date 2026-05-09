@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #38bdf8;
+            --primary-hover: #0284c7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #38bdf8, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .container {
+            display: flex;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            flex-wrap: wrap;
+        }
+
+        .panel {
+            flex: 1;
+            min-width: 300px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.75rem;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(56, 189, 248, 0.4);
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        button.secondary {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            margin-top: 1rem;
+            box-shadow: none;
+        }
+
+        button.secondary:hover {
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        /* School Cards */
+        .school-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        /* Scrollbar */
+        .school-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .school-list::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        .school-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .school-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .school-card:hover {
+            transform: translateX(5px);
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+
+        .school-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+
+        .school-address {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .school-distance {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .school-coords {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .alert.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        .alert.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            margin: 1rem 0;
+            font-weight: 600;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>School Management</h1>
+        <p style="color: var(--text-muted);">Real-time geographic school tracking console</p>
+    </header>
+
+    <div class="container">
+        <!-- Add School Panel -->
+        <div class="panel">
+            <h2>✨ Add New School</h2>
+            <div id="addAlert" class="alert"></div>
+            <form id="addSchoolForm">
+                <div class="form-group">
+                    <label>School Name</label>
+                    <input type="text" id="name" required placeholder="e.g. Greenwood High">
+                </div>
+                <div class="form-group">
+                    <label>Full Address</label>
+                    <input type="text" id="address" required placeholder="123 Education Blvd">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Latitude</label>
+                        <input type="number" step="any" id="latitude" required placeholder="40.7128">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Longitude</label>
+                        <input type="number" step="any" id="longitude" required placeholder="-74.0060">
+                    </div>
+                </div>
+                <button type="button" class="secondary" onclick="useMyLocationForInput()" style="margin-bottom: 1rem; margin-top: 0; padding: 0.7rem;">
+                    📍 Use My Current Location
+                </button>
+                <button type="submit">Register School</button>
+            </form>
+        </div>
+
+        <!-- List Schools Panel -->
+        <div class="panel">
+            <h2>🌍 Find Nearest Schools</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Click the button below to use your browser's GPS and fetch all schools sorted by distance.
+            </p>
+            <button onclick="findNearestSchools()">📍 Find Schools Near Me</button>
+            
+            <div id="listLoader" class="loader">Locating you via Satellite...</div>
+            <div id="listAlert" class="alert"></div>
+
+            <div class="school-list" id="schoolList">
+                <!-- Cards will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form Submission
+        document.getElementById('addSchoolForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertBox = document.getElementById('addAlert');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            submitBtn.textContent = 'Registering...';
+            submitBtn.style.opacity = '0.7';
+
+            const payload = {
+                name: document.getElementById('name').value,
+                address: document.getElementById('address').value,
+                latitude: parseFloat(document.getElementById('latitude').value),
+                longitude: parseFloat(document.getElementById('longitude').value)
+            };
+
+            try {
+                const res = await fetch('/addSchool', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alertBox.className = 'alert success';
+                    alertBox.textContent = '✅ ' + data.message;
+                    e.target.reset();
+                    
+                    // If the list is currently showing, refresh it to include the new school
+                    if(document.getElementById('schoolList').innerHTML !== '') {
+                        findNearestSchools(true);
+                    }
+                } else {
+                    alertBox.className = 'alert error';
+                    alertBox.textContent = '❌ ' + (data.errors ? data.errors[0].message : data.message);
+                }
+            } catch (err) {
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ Network error occurred';
+            } finally {
+                submitBtn.textContent = 'Register School';
+                submitBtn.style.opacity = '1';
+                setTimeout(() => { alertBox.className = 'alert'; }, 5000);
+            }
+        });
+
+        // Use Browser Geolocation for Input
+        function useMyLocationForInput() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    document.getElementById('latitude').value = position.coords.latitude.toFixed(6);
+                    document.getElementById('longitude').value = position.coords.longitude.toFixed(6);
+                }, () => {
+                    alert("Location access denied or unavailable.");
+                });
+            } else {
+                alert("Geolocation is not supported by your browser");
+            }
+        }
+
+        // Fetch and List Schools
+        function findNearestSchools(silent = false) {
+            const listContainer = document.getElementById('schoolList');
+            const loader = document.getElementById('listLoader');
+            const alertBox = document.getElementById('listAlert');
+            
+            if(!silent) {
+                listContainer.innerHTML = '';
+                loader.style.display = 'block';
+                alertBox.className = 'alert';
+            }
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    if(!silent) loader.textContent = 'Fetching and sorting schools...';
+
+                    try {
+                        const res = await fetch(`/listSchools?latitude=${lat}&longitude=${lon}`);
+                        const data = await res.json();
+
+                        loader.style.display = 'none';
+
+                        if (data.success) {
+                            if (data.data.length === 0) {
+                                alertBox.className = 'alert';
+                                alertBox.textContent = 'No schools registered yet.';
+                                alertBox.style.display = 'block';
+                                return;
+                            }
+
+                            listContainer.innerHTML = data.data.map(school => `
+                                <div class="school-card">
+                                    <div class="school-distance">${school.distance_km} km</div>
+                                    <div class="school-name">${school.name}</div>
+                                    <div class="school-address">📍 ${school.address}</div>
+                                    <div class="school-coords">
+                                        <span>Lat: ${school.latitude}</span>
+                                        <span>Lon: ${school.longitude}</span>
+                                    </div>
+                                </div>
+                            `).join('');
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    } catch (err) {
+                        loader.style.display = 'none';
+                        alertBox.className = 'alert error';
+                        alertBox.textContent = '❌ Failed to fetch schools.';
+                    }
+
+                }, (error) => {
+                    loader.style.display = 'none';
+                    alertBox.className = 'alert error';
+                    alertBox.textContent = '❌ Please allow location access to find nearby schools.';
+                });
+            } else {
+                loader.style.display = 'none';
+                alertBox.className = 'alert error';
+                alertBox.textContent = '❌ Geolocation not supported.';
+            }
+        }
+    </script>
+</body>
+</html>

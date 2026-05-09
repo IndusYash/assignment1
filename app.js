@@ -4,10 +4,14 @@ const errorHandler = require('./middleware/errorHandler');
 const notFound = require('./middleware/notFound');
 
 const app = express();
+const path = require('path');
 
 // ─── Body Parser ──────────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ─── Serve Frontend ───────────────────────────────────────────────────────────
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
